@@ -1,0 +1,39 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/cook?characterEncoding=utf-8
+    username: root
+    password: 19960118
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    pool:
+      max-active: 8
+      max-wait: 1
+      max-idle: 8
+      min-idle: 0
+    password:
+    timeout: 0
+
+  session:
+    store-type: redis
+  cache:
+    type: redis
+
+#mybatis配置
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.sunsharing.kaohe.pojo.Menu
+
+
+logging:
+  level: debug
+  pattern:
+    console: '%d - %msg%n'

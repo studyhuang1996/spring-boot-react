@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ @(#) MenuMapper.xml
+  ~ 版权声明 厦门畅享信息技术有限公司, 版权所有 违者必究
+  ~
+  ~ <br> Copyright:  Copyright (c) 2018
+  ~ <br> Company:厦门畅享信息技术有限公司
+  ~ <br> @author huang
+  ~ <br> 2018-05-31 23:27:16
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sunsharing.kaohe.dao.MenuMapper">
+    <resultMap id="BaseResultMap" type="com.sunsharing.kaohe.pojo.Menu">
+        <id column="mid" property="mid" jdbcType="BIGINT" />
+        <result column="mname" property="mname" jdbcType="VARCHAR" />
+        <result column="mpic" property="mpic" jdbcType="VARCHAR" />
+        <result column="userid" property="userid" jdbcType="BIGINT" />
+        <result column="cid" property="cid" jdbcType="BIGINT" />
+        <result column="mdate" property="mdate" jdbcType="DATE" />
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.sunsharing.kaohe.pojo.Menu" extends="BaseResultMap" >
+        <result column="mdesc" property="mdesc" jdbcType="LONGVARCHAR" />
+    </resultMap>
+    <parameterMap id="Menu" type="com.sunsharing.kaohe.pojo.Menu"/>
+
+    <sql id="Base_Column_List" >
+        mid, mname, mpic, userid, cid, mdate
+    </sql>
+    <sql id="Blob_Column_List" >
+        mdesc
+    </sql>
+    <!--MyBatis 获取由数据库自动生成的主键；-->
+    <insert id="insert" parameterMap="Menu" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        menu(mid, mname, mpic, userid, cid, mdate)
+        VALUES (#{mid},#{mname},#{mpic},#{userid},#{cid},#{mdate})
+    </insert>
+    <update id="update">
+        UPDATE menu
+        SET
+        <if test="mname != null">
+            mname = #{mname}
+        </if>
+        <if test="mpic != null">
+            mpic = #{mpic}
+        </if>
+        <if test="userid != null">
+            userid = #{userid}
+        </if>
+        <if test="cid != null">
+            cid = #{cid}
+        </if>
+        <if test="mdate != null">
+            mdate = #{mdate}
+        </if>
+
+        where
+        mid = #{mid}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM
+        menu
+        WHERE mid = #{mid}
+    </delete>
+
+    <select id="getMenusByName" parameterType="string" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"></include>
+        FROM  menu
+        where mname LIKE '%${mname}%'
+    </select>
+    <select id="getMenus"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"></include>
+        FROM  menu
+    </select>
+    <select id="getMenusByCid"  parameterType="long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"></include>
+        FROM  menu
+        WHERE  cid = #{cid}
+    </select>
+</mapper>
