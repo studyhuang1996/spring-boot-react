@@ -10,20 +10,17 @@
 
 package com.sunsharing.kaohe.service.impl;
 
-import com.sunsharing.kaohe.dao.MenuMapper;
+import com.sunsharing.kaohe.dao.mybatis.MenuMapper;
 import com.sunsharing.kaohe.pojo.Menu;
 import com.sunsharing.kaohe.service.MenuService;
 import com.sunsharing.kaohe.utils.CallResult;
 import com.sunsharing.kaohe.utils.ResultUtils;
-import com.sunsharing.kaohe.web.controller.MenuController;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-
-import javax.persistence.Id;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -54,7 +51,7 @@ public class MenuServiceImpl implements MenuService {
 
 
     @Override
-    public List<Menu> getMenus(Integer page, Integer limit) {
+    public List<Menu> getMenus() {
         return menuMapper.getMenus();
     }
 

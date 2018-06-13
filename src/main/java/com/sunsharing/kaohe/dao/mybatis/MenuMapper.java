@@ -5,10 +5,10 @@
  * <br> Copyright:  Copyright (c) 2018
  * <br> Company:厦门畅享信息技术有限公司
  * <br> @author huang
- * <br> 2018-05-31 23:17:35
+ * <br> 2018-06-12 09:47:48
  */
 
-package com.sunsharing.kaohe.dao;
+package com.sunsharing.kaohe.dao.mybatis;
 
 import com.sunsharing.kaohe.pojo.Menu;
 

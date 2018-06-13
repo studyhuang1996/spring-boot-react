@@ -61,7 +61,6 @@ public class CategoryController {
             return ResultUtils.error(bindingResult.getFieldError().getDefaultMessage());
         }
         return categoryService.saveOrUpdate(category);
-       // ResultUtils.success(null);
     }
 
 
@@ -70,6 +69,7 @@ public class CategoryController {
         if (cid ==null){
             return ResultUtils.error("参数为空");
         }
+
         categoryService.delete(cid);
         return ResultUtils.success(null);
     }

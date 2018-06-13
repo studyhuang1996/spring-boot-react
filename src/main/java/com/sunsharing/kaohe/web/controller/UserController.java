@@ -16,11 +16,15 @@ import com.sunsharing.kaohe.pojo.User;
 import com.sunsharing.kaohe.service.UserService;
 import com.sunsharing.kaohe.utils.CallResult;
 import com.sunsharing.kaohe.utils.Const;
+import com.sunsharing.kaohe.utils.DateUtils;
 import com.sunsharing.kaohe.utils.RedisUtils;
 import com.sunsharing.kaohe.utils.ResultUtils;
+import com.sunsharing.kaohe.utils.SHA256Utils;
 import com.sunsharing.kaohe.utils.VerifyObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
@@ -30,7 +34,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import sun.security.provider.SHA;
+
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -42,7 +49,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    RedisUtils redisUtils = new RedisUtils();
+    @Autowired
+    private RedisTemplate<String,Object> redisTemplate;
+
 
     @PostMapping("login")
     @ResponseBody
@@ -54,14 +63,23 @@ public class UserController {
         if (!VerifyObject.verify(currUser)) {
             return ResultUtils.error("该用户不存在");
         }
-        if (!(currUser.getUpassword().equals(user.getUpassword()))) {
+        //获取用户的密码并加密
+        String salt = DateUtils.toString(currUser.getCreateTime());
+        String userPwd =  SHA256Utils.SHA256Encode(user.getUpassword()+salt);
+        System.out.println(userPwd);
+        if (!(userPwd.equals(currUser.getUpassword()))) {
             return ResultUtils.error("密码输入错误");
         }
-        if(!(redisUtils.delete("userId"))){
-            return ResultUtils.error("删除缓存失败");
+
+        if (redisTemplate.hasKey("userId")){
+            redisTemplate.delete("userId");
         }
         session.setAttribute(Const.CURR_USER,currUser);
-        redisUtils.set("userId",session.getId());
+        ValueOperations<String,Object> template =redisTemplate.opsForValue();
+        //存sessionId
+        template.set("userId",session.getId());
+        //设置过期时间
+        redisTemplate.expire("userId", 30,TimeUnit.MINUTES);
         return ResultUtils.success(user);
     }
 
@@ -103,14 +121,14 @@ public class UserController {
 
     @GetMapping("list")
     @ResponseBody
-    public CallResult listUsers(Integer pageNum,Integer pageSize){
-        PageHelper.startPage(pageNum,pageSize);
+    public CallResult listUsers(){
+
         List<User> users = userService.getUserList();
-        PageInfo<User> pageInfo = new PageInfo<User>(users);
-        if (CollectionUtils.isEmpty(pageInfo.getList())){
+
+        if (CollectionUtils.isEmpty(users)){
             return ResultUtils.error("没数据");
         }
-        return  ResultUtils.success(pageInfo);
+        return  ResultUtils.success(users);
     }
 
     @GetMapping("delete/{id}")
@@ -120,7 +138,9 @@ public class UserController {
 
             return ResultUtils.error("没数据");
         }
-
+         if (userService.get(id)== null){
+            return ResultUtils.error("没有该用户，不可删除");
+         };
         userService.delete(id);
         return ResultUtils.success(null);
 

@@ -10,6 +10,8 @@
 
 package com.sunsharing.kaohe.web.controller;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.sunsharing.kaohe.pojo.Menu;
 import com.sunsharing.kaohe.service.MenuService;
 import com.sunsharing.kaohe.utils.CallResult;
@@ -40,8 +42,8 @@ public class MenuController {
 
     @GetMapping("list")
     public CallResult listMenus(){
-
-       List<Menu> menus =menuService.getMenus(null,null);
+        PageHelper.startPage(2,5);
+       List<Menu> menus =menuService.getMenus();
        if (CollectionUtils.isEmpty(menus)){
            return ResultUtils.error("菜谱列表为空");
        }

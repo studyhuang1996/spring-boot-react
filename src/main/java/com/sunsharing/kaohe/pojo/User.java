@@ -10,6 +10,7 @@
 
 package com.sunsharing.kaohe.pojo;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -24,7 +25,7 @@ import lombok.Data;
  */
 @Entity
 @Data
-public class User {
+public class User implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,5 +42,9 @@ public class User {
     private String utel;
 
     private String ustate;
+
+    private Date  createTime;
+
+    private Date updateTime;
 
 }

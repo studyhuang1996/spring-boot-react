@@ -18,12 +18,11 @@ import java.util.List;
 public interface MenuService {
 
 
-    CallResult saveOrUpdate(Menu user);
+    CallResult saveOrUpdate(Menu menu);
 
     void  deleteById(Long uid);
 
-
-    List<Menu> getMenus(Integer page, Integer limit);
+    List<Menu> getMenus();
 
     List<Menu> getMenusByName(String mname);
 

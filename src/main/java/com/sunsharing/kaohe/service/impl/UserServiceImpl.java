@@ -13,25 +13,44 @@ package com.sunsharing.kaohe.service.impl;
 import com.sunsharing.kaohe.dao.UserRepository;
 import com.sunsharing.kaohe.pojo.User;
 import com.sunsharing.kaohe.service.UserService;
+import com.sunsharing.kaohe.utils.DateUtils;
+import com.sunsharing.kaohe.utils.SHA256Utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
     @Override
+    @Transactional
     public void saveOrUpdate(User user) {
-       userRepository.save(user);
+
+        if (!StringUtils.isEmpty(user.getUpassword())){
+            //用注册时间当盐值
+           String date =  DateUtils.toString(new Date());
+            user.setUpassword(SHA256Utils.SHA256Encode(user.getUpassword()+date));
+            System.out.println(user.getUpassword());
+        }
+       if (user.getUid() == null) {
+            user.setCreateTime(new Date());
+       }else{
+            user.setUpdateTime(new Date());
+       }
+        userRepository.save(user);
     }
 
-
-
     @Override
+    @Transactional
     public void delete(Long id) {
        userRepository.delete(id);
     }

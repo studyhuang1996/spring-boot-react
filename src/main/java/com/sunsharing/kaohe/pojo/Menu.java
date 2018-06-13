@@ -10,6 +10,7 @@
 
 package com.sunsharing.kaohe.pojo;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -29,7 +30,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Menu {
+public class Menu implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long mid;
