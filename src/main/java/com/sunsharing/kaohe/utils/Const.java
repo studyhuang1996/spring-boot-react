@@ -14,4 +14,6 @@ public class Const {
 
     public static final String CURR_USER = "user";
 
+    public static final String DOMAIN = "http://img.studyhuang.cn/";
+
 }

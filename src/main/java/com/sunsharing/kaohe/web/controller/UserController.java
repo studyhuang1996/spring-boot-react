@@ -66,7 +66,7 @@ public class UserController {
         //获取用户的密码并加密
         String salt = DateUtils.toString(currUser.getCreateTime());
         String userPwd =  SHA256Utils.SHA256Encode(user.getUpassword()+salt);
-        System.out.println(userPwd);
+       // System.out.println(userPwd);
         if (!(userPwd.equals(currUser.getUpassword()))) {
             return ResultUtils.error("密码输入错误");
         }
