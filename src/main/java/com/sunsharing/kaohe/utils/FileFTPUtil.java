@@ -33,9 +33,10 @@ import lombok.extern.slf4j.Slf4j;
 public class FileFTPUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(FileFTPUtil.class);
-    private  static String ftpIp ="119.29.56.63";
-    private  static String ftpUser = "ftpusers";
-    private  static String ftpPass = "studyhuang1996";
+    private  static String ftpIp =PropertiesUtil.getProperty("ftp.server.ip");
+    private  static String ftpUser = PropertiesUtil.getProperty("ftp.user");
+    private  static String ftpPass = PropertiesUtil.getProperty("ftp.pass");
+    private  static Integer ftpPort = PropertiesUtil.getIntProperty("ftp.server.port");
 
     private String ip;
     private Integer port;
@@ -51,7 +52,7 @@ public class FileFTPUtil {
     }
 
     public static boolean uploadFile(List<File> fileList) throws IOException {
-        FileFTPUtil ftpUtils = new FileFTPUtil(ftpIp,21,ftpUser,ftpPass);
+        FileFTPUtil ftpUtils = new FileFTPUtil(ftpIp,ftpPort,ftpUser,ftpPass);
         logger.info("开始上传文件");
         Boolean result =ftpUtils.uploadFile("img",fileList);
         logger.info("上传文件成功");
