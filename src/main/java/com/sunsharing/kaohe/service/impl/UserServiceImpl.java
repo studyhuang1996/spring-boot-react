@@ -13,8 +13,11 @@ package com.sunsharing.kaohe.service.impl;
 import com.sunsharing.kaohe.dao.UserRepository;
 import com.sunsharing.kaohe.pojo.User;
 import com.sunsharing.kaohe.service.UserService;
+import com.sunsharing.kaohe.utils.CallResult;
 import com.sunsharing.kaohe.utils.DateUtils;
+import com.sunsharing.kaohe.utils.ResultUtils;
 import com.sunsharing.kaohe.utils.SHA256Utils;
+import com.sunsharing.kaohe.utils.VerifyObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,9 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
@@ -33,36 +39,49 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void saveOrUpdate(User user) {
-
-        if (!StringUtils.isEmpty(user.getUpassword())){
-            //用注册时间当盐值
-           String date =  DateUtils.toString(new Date());
-            user.setUpassword(SHA256Utils.SHA256Encode(user.getUpassword()+date));
-            System.out.println(user.getUpassword());
-        }
-       if (user.getUid() == null) {
+    public CallResult saveOrUpdate(User user) {
+        //保存
+        if (user.getId() == null) {
             user.setCreateTime(new Date());
-       }else{
+            if (!StringUtils.isEmpty(user.getPassword())){
+                //用注册时间当盐值
+                String date =  DateUtils.toString(new Date());
+                user.setPassword(SHA256Utils.SHA256Encode(user.getPassword()+date));
+                log.info(user.getPassword());
+            }
+            User  currUser = userRepository.getUserByUsername(user.getUsername());
+            if (VerifyObject.verify(currUser)) {
+                return ResultUtils.error("该用户名已存在");
+            }
+        }else{
+            //编辑
+            Date createTime = userRepository.findOne(user.getId()).getCreateTime();
+            if (!StringUtils.isEmpty(user.getPassword())){
+                //用注册时间当盐值
+                String date =  DateUtils.toString(createTime);
+                user.setPassword(SHA256Utils.SHA256Encode(user.getPassword()+date));
+            }
+            user.setCreateTime(createTime);
             user.setUpdateTime(new Date());
-       }
+        }
         userRepository.save(user);
+        return ResultUtils.success(null);
     }
 
     @Override
     @Transactional
-    public void delete(Long id) {
+    public void delete(Integer id) {
        userRepository.delete(id);
     }
 
     @Override
-    public User get(Long id) {
+    public User get(Integer id) {
         return userRepository.findOne(id);
     }
 
     @Override
     public User getUserByName(String username) {
-        return userRepository.getUserByUname(username);
+        return userRepository.getUserByUsername(username);
     }
 
     @Override

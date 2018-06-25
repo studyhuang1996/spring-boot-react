@@ -33,16 +33,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import sun.security.provider.SHA;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-@Controller
+@RestController
 @RequestMapping("users")
 public class UserController {
 
@@ -54,20 +56,19 @@ public class UserController {
 
 
     @PostMapping("login")
-    @ResponseBody
     public CallResult login(User user, HttpSession session){
 
         if (!VerifyObject.verify(user)){
             return ResultUtils.error("参数传递错误");         }
-        User  currUser = userService.getUserByName(user.getUname());
+        User  currUser = userService.getUserByName(user.getUsername());
         if (!VerifyObject.verify(currUser)) {
             return ResultUtils.error("该用户不存在");
         }
         //获取用户的密码并加密
         String salt = DateUtils.toString(currUser.getCreateTime());
-        String userPwd =  SHA256Utils.SHA256Encode(user.getUpassword()+salt);
+        String userPwd =  SHA256Utils.SHA256Encode(user.getPassword()+salt);
        // System.out.println(userPwd);
-        if (!(userPwd.equals(currUser.getUpassword()))) {
+        if (!(userPwd.equals(currUser.getPassword()))) {
             return ResultUtils.error("密码输入错误");
         }
 
@@ -84,9 +85,8 @@ public class UserController {
     }
 
 
-    @GetMapping("get/{id}")
-    @ResponseBody
-    public CallResult getUserInfo(@PathVariable("id") Long id){
+    @GetMapping("info/{id}")
+    public CallResult getUserInfo(@PathVariable("id") Integer id){
         if (null == id){
             return ResultUtils.error("参数为空");
         }
@@ -104,16 +104,11 @@ public class UserController {
      * @return
      */
     @PostMapping("save")
-    @ResponseBody
     public  CallResult saveUser(@Valid User user, BindingResult bindingResult){
         if (bindingResult.hasErrors()){
             return ResultUtils.error(bindingResult.getFieldError().getDefaultMessage());
         }
 
-        User  currUser = userService.getUserByName(user.getUname());
-        if (VerifyObject.verify(currUser)) {
-            return ResultUtils.error("该用户名已存在");
-        }
          userService.saveOrUpdate(user);
 
         return ResultUtils.success(null);
@@ -133,7 +128,7 @@ public class UserController {
 
     @GetMapping("delete/{id}")
     @ResponseBody
-    public  CallResult deleteById(@PathVariable Long id){
+    public  CallResult deleteById(@PathVariable Integer id){
         if (null == id){
 
             return ResultUtils.error("没数据");
@@ -145,6 +140,21 @@ public class UserController {
         return ResultUtils.success(null);
 
     }
+
+    /**
+     *  退出登录
+     * @param session
+     * @return
+     */
+    @GetMapping("/loginout")
+    public CallResult loginOut(HttpSession session){
+        session.removeAttribute(Const.CURR_USER);
+        if (redisTemplate.hasKey(Const.CURR_USER)){
+            redisTemplate.delete(Const.CURR_USER);
+        }
+        return ResultUtils.success(null);
+    }
+
 
 
 }

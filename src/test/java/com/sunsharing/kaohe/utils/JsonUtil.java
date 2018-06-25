@@ -123,24 +123,24 @@ public class JsonUtil {
 
     public static void main(String[] args) {
         User user = new User();
-        user.setUname("huang");
-        user.setUid(Long.valueOf(2));
+        user.setUsername("huang");
+        user.setId(2);
 
         User user2 = new User();
-        user.setUname("huaFFFng");
-        user.setUid(Long.valueOf(1));
+        user.setUsername("huaFFFng");
+        user.setId(1);
 
         List<User> users = Lists.newArrayList();
         users.add(user2);
         users.add(user);
         String objTostr = JsonUtil.objToJSONString(users);
         List<User> uu = JsonUtil.string2JSONListObj(objTostr,List.class,User.class);
-        System.out.println("DDFF"+uu.get(1).getUname());
+        System.out.println("DDFF"+uu.get(1).getUsername());
         log.info(objToString(user));
         log.info(objToJSONString(user));
 
         User user1 = string2Obj(objToString(user),User.class);
-       System.out.println(user1.getUname());
+       System.out.println(user1.getUsername());
     }
 
 }

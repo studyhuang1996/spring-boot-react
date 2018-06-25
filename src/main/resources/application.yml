@@ -26,6 +26,16 @@ spring:
     store-type: redis
   cache:
     type: redis
+#ElasticSearch
+#服务地址
+#  data:
+#    elasticsearch:
+#      cluster-name: elasticsearch
+#      cluster-nodes: 127.0.0.1:9301
+#      repositories:
+#        enabled: true
+      #开启仓库
+
 
 #mybatis配置
 mybatis:
@@ -38,3 +48,10 @@ logging:
   level: debug
   pattern:
     console: '%d - %msg%n'
+
+
+
+
+
+
+

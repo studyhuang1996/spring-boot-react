@@ -29,21 +29,22 @@ public class User implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long uid;
+    private Integer id;
 
-    private String uname;
+    private String username;
 
-    private String upassword;
+    private String password;
 
-    private String uemail;
+    private String email;
 
-    private Date ubirthday;
+    private String phone;
 
-    private String utel;
+    private String question;
 
-    private String ustate;
+    private String answer;
 
-    private Date  createTime;
+
+    private Date createTime;
 
     private Date updateTime;
 

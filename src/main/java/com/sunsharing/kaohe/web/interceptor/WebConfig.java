@@ -34,8 +34,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
            excludePathPatterns 用户排除拦截
          */
         registry.addInterceptor(new LoginInterceptor())
-            .addPathPatterns("user/**")
-            .excludePathPatterns("/user/login");
+            .addPathPatterns("users/**")
+            .excludePathPatterns("/users/login");
 
     }
 

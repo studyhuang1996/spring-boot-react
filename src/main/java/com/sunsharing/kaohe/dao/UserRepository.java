@@ -17,10 +17,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface UserRepository extends JpaRepository<User,Long> {
+public interface UserRepository extends JpaRepository<User,Integer> {
 
-   User getUserByUname(String uname);
+   User getUserByUsername(String username);
 
-   void deleteUserByUid(Long uid);
+   void deleteUserById(Integer id);
 
 }

@@ -12,16 +12,17 @@ package com.sunsharing.kaohe.service;
 
 
 import com.sunsharing.kaohe.pojo.User;
+import com.sunsharing.kaohe.utils.CallResult;
 
 import java.util.List;
 
 public interface UserService {
 
-    void saveOrUpdate(User user);
+    CallResult saveOrUpdate(User user);
 
-    void delete(Long id);
+    void delete(Integer id);
 
-     User get(Long id);
+     User get(Integer id);
 
      User getUserByName(String username);
 

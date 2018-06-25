@@ -40,7 +40,7 @@ public class ResultUtils {
         CallResult result = new CallResult();
 
         result.setCode(10001);
-        result.putData("name","校验错误");
+      //  result.putData("name","校验错误");
         result.setMsg(msg);
         return result;
     }
